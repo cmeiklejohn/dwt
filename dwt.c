@@ -143,13 +143,15 @@ int main(int argc, char *argv[]) {
           } else {
             mvwprintw(window, starty + (i + 2), startx, "%d. %s", i + 1, tasks[i]);
           }
+
+          wclrtoeol(window);
         }
+
+        wclrtobot(window);
       } else {
         mvwprintw(window, starty + 2, startx, "None!");
-      }
-
-      for(i = task_list_size; i < 10; i++) {
-        mvwprintw(window, starty + (i + 2), startx, "%d. Empty!", i + 1);
+        wclrtoeol(window);
+        wclrtobot(window);
       }
 
       wrefresh(window);
@@ -179,7 +181,6 @@ int main(int argc, char *argv[]) {
     }
 
     curs_set(1);
-    clrtoeol();
     refresh();
     endwin();
   } else {
