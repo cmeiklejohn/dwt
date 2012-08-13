@@ -166,6 +166,11 @@ int main(int argc, char *argv[]) {
           ++highlight;
         }
         break;
+      case 'd':
+        if(delete_task(tasks[highlight], task_list) == 0) {
+          --highlight;
+        }
+        break;
       }
     }
 
