@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <ncurses.h>
 
 const char TASK_LIST_FILE[] = "tasks.txt";
 
@@ -21,12 +22,15 @@ void close_task_list(FILE * task_list) {
 }
 
 int main(int argc, char *argv[]) {
-  int option, cflag, lflag;
+  int option, cflag, lflag, iflag;
   char task[100];
   FILE *task_list;
 
-  while((option = getopt(argc, argv, "lc:")) != -1) {
+  while((option = getopt(argc, argv, "ilc:")) != -1) {
     switch(option) {
+    case 'i':
+      iflag = 1;
+      break;
     case 'c':
       cflag = 1;
       break;
@@ -41,14 +45,26 @@ int main(int argc, char *argv[]) {
 
   task_list = open_task_list();
 
-  if(cflag) {
-    fputs(optarg, task_list);
-    fputc('\n', task_list);
-  }
+  if(iflag) {
+    initscr();
+    raw();
+    noecho();
 
-  if(lflag) {
-    while(fgets(task, sizeof(task), task_list) != NULL) {
-      printf("%s", task);
+    printw("TODOs");
+    refresh();
+
+    getch();
+    endwin();
+  } else {
+    if(cflag) {
+      fputs(optarg, task_list);
+      fputc('\n', task_list);
+    }
+
+    if(lflag) {
+      while(fgets(task, sizeof(task), task_list) != NULL) {
+        printf("%s", task);
+      }
     }
   }
 
