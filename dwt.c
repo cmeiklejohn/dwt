@@ -118,6 +118,7 @@ int main(int argc, char *argv[]) {
   if(iflag) {
     WINDOW *window;
     int startx = 5, starty = 3, c, highlight;
+    char buffer[100];
 
     initscr();
     clear();
@@ -133,6 +134,7 @@ int main(int argc, char *argv[]) {
 
     while(1) {
       mvwprintw(window, starty, startx, "TODOs");
+      wclrtoeol(window);
 
       if((task_list_size = read_tasks(tasks, task_list))) {
         for(i = 0; i < task_list_size; i++) {
@@ -173,9 +175,21 @@ int main(int argc, char *argv[]) {
         }
         break;
       case 'd':
-        if(delete_task(tasks[highlight], task_list) == 0) {
+        if(delete_task(tasks[highlight], task_list) == 1) {
           --highlight;
         }
+        break;
+      case 'c':
+        mvwprintw(window, starty, startx, "Creating task: ");
+        echo();
+
+        if(wgetstr(window, buffer) == OK) {
+          if(create_task(buffer, task_list) == 1) {
+            ++highlight;
+          }
+        }
+
+        noecho();
         break;
       }
     }
