@@ -5,3 +5,5 @@ data to a flat file, has a CLI or curses-based interface for removing
 and adding items without any history of previous items.
 
 Nice and easy, no fuss.
+
+Upcoming features: iCloud integration. :trollface:
