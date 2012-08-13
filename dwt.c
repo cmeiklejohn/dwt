@@ -37,10 +37,6 @@ int create_task(char *task, FILE *task_list) {
   }
 }
 
-int delete_task(char *task, FILE *task_list) {
-  return 1;
-}
-
 int read_tasks(char *tasks[], FILE *task_list) {
   int i = 0;
   char *task;
@@ -49,7 +45,7 @@ int read_tasks(char *tasks[], FILE *task_list) {
   if((task_list = open_task_list("r"))) {
     while(fgets(buffer, sizeof(buffer), task_list) != NULL) {
       if((task = malloc(sizeof(char) * 100)) != NULL ) {
-        strcpy(task, buffer);
+        strncpy(task, buffer, strlen(buffer) - 1);
         tasks[i] = task;
         i++;
       }
@@ -58,6 +54,30 @@ int read_tasks(char *tasks[], FILE *task_list) {
     close_task_list(task_list);
 
     return i;
+  } else {
+    return 0;
+  }
+}
+
+int delete_task(char *task, FILE *task_list) {
+  int i, task_list_size;
+  char *tasks[100];
+
+  if((task_list_size = read_tasks(tasks, task_list))) {
+    if((task_list = open_task_list("w"))) {
+      for(i = 0; i < task_list_size; i++) {
+        if(strncmp(task, tasks[i], sizeof(tasks[i])) != 0) {
+          fputs(tasks[i], task_list);
+          fputc('\n', task_list);
+        }
+      }
+
+      close_task_list(task_list);
+    } else {
+      return 1;
+    }
+
+    return 1;
   } else {
     return 0;
   }
@@ -120,7 +140,7 @@ int main(int argc, char *argv[]) {
 
       if((task_list_size = read_tasks(tasks, task_list))) {
         for(i = 0; i < task_list_size; i++) {
-          printf("%s", tasks[i]);
+          printf("%s\n", tasks[i]);
         }
       } else {
         printf("None!\n");
