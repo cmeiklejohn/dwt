@@ -133,7 +133,7 @@ int main(int argc, char *argv[]) {
     keypad(window, TRUE);
 
     while(1) {
-      mvwprintw(window, starty, startx, "TODOs");
+      mvwprintw(window, starty, startx, "TODOs ('c' to add, 'd' to remove)");
       wclrtoeol(window);
 
       if((task_list_size = read_tasks(tasks, task_list))) {
@@ -181,11 +181,16 @@ int main(int argc, char *argv[]) {
         break;
       case 'c':
         mvwprintw(window, starty, startx, "Creating task: ");
+        wclrtoeol(window);
         echo();
 
         if(wgetstr(window, buffer) == OK) {
           if(create_task(buffer, task_list) == 1) {
-            ++highlight;
+            if((task_list_size) == 0) {
+              highlight = 0;
+            } else {
+              ++highlight;
+            }
           }
         }
 
