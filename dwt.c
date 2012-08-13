@@ -4,6 +4,9 @@
 #include <string.h>
 #include <ncurses.h>
 
+#define WIDTH 77
+#define HEIGHT 23
+
 const char TASK_LIST_FILE[] = "tasks.txt";
 
 FILE* open_task_list(char *mode_string) {
@@ -113,14 +116,62 @@ int main(int argc, char *argv[]) {
   }
 
   if(iflag) {
+    WINDOW *window;
+    int startx = 5, starty = 3, c, highlight;
+
     initscr();
+    clear();
     raw();
     noecho();
+    cbreak();
+    curs_set(0);
 
-    printw("TODOs");
+    startx = (80 - WIDTH);
+    starty = (24 - HEIGHT);
+    window = newwin(HEIGHT, WIDTH, starty, startx);
+    keypad(window, TRUE);
+
+    while(1) {
+      mvwprintw(window, starty, startx, "TODOs");
+
+      if((task_list_size = read_tasks(tasks, task_list))) {
+        for(i = 0; i < task_list_size; i++) {
+          if(highlight == i) {
+            wattron(window, A_REVERSE);
+            mvwprintw(window, starty + (i + 2), startx, "%s", tasks[i]);
+            wattroff(window, A_REVERSE);
+          } else {
+            mvwprintw(window, starty + (i + 2), startx, "%s", tasks[i]);
+          }
+        }
+      } else {
+        mvwprintw(window, starty + 2, startx, "None!");
+      }
+
+      wrefresh(window);
+
+      c = wgetch(window);
+      switch(c) {
+      case KEY_UP:
+        if(highlight == 0) {
+          highlight = task_list_size - 1;
+        } else {
+          --highlight;
+        }
+        break;
+      case KEY_DOWN:
+        if(highlight == task_list_size - 1) {
+          highlight = 0;
+        } else {
+          ++highlight;
+        }
+        break;
+      }
+    }
+
+    curs_set(1);
+    clrtoeol();
     refresh();
-
-    getch();
     endwin();
   } else {
     if(dflag) {
