@@ -138,14 +138,18 @@ int main(int argc, char *argv[]) {
         for(i = 0; i < task_list_size; i++) {
           if(highlight == i) {
             wattron(window, A_REVERSE);
-            mvwprintw(window, starty + (i + 2), startx, "%s", tasks[i]);
+            mvwprintw(window, starty + (i + 2), startx, "%d. %s", i + 1, tasks[i]);
             wattroff(window, A_REVERSE);
           } else {
-            mvwprintw(window, starty + (i + 2), startx, "%s", tasks[i]);
+            mvwprintw(window, starty + (i + 2), startx, "%d. %s", i + 1, tasks[i]);
           }
         }
       } else {
         mvwprintw(window, starty + 2, startx, "None!");
+      }
+
+      for(i = task_list_size; i < 10; i++) {
+        mvwprintw(window, starty + (i + 2), startx, "%d. Empty!", i + 1);
       }
 
       wrefresh(window);
