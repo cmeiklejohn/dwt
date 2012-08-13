@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
       lflag = 1;
       break;
     default:
-      fprintf(stderr, "Usage: %s [-c task] [-l]\n", argv[0]);
+      fprintf(stderr, "Usage: %s [-c task] [-d task] [-l] [-i]\n", argv[0]);
       exit(EXIT_FAILURE);
     }
   }
